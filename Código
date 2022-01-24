@@ -1,0 +1,148 @@
+// Variáveis da bolinha
+let xBolinha = 300;
+let yBolinha = 200;
+let diametro = 20;
+let raio = diametro / 2;
+
+// Velocidade da bolinha
+let veloXBolinha = 6;
+let veloYBolinha = 6;
+
+
+// Variáveis da raquete 1
+let xRaquete1 = 5;
+let yRaquete1 = 15;
+let largRaquete1 = 12;
+let altRaquete1 = 55;
+
+let colidiu = false;
+
+// Variáveis do oponente
+let xRaquete2 = 580;
+let yRaquete2 = 15;
+let veloYRaquete2;
+
+// Placar do jogo
+let meusPontos = 0;
+let oponentePontos = 0;
+
+
+function setup() {
+  createCanvas(600, 400);
+}
+
+function draw() {
+  background(0); 
+  mostraBolinha();
+  movimentoBolinha();
+  colisaoBorda();
+  
+  // Raquete 1
+  mostraRaquete(xRaquete1, yRaquete1); 
+  movimentoRaquete1();
+  colisaoRaquete(xRaquete1, yRaquete1);
+  loopRaqueteParede();
+  
+  // Raquete 2
+  mostraRaquete(xRaquete2, yRaquete2);
+  movimentoRaquete2();
+  colisaoRaquete(xRaquete2, yRaquete2);
+  
+  //Placar e pontos
+  incluiPlacar();
+  marcaPonto();
+  
+  linhaCentral();
+   
+}
+
+// Funções bolinha
+function mostraBolinha() {
+  circle(xBolinha, yBolinha, diametro);
+}
+
+
+function movimentoBolinha() {
+  xBolinha += veloXBolinha;
+  yBolinha += veloYBolinha;
+}
+
+
+function colisaoBorda() {
+  if(xBolinha + raio > width || xBolinha - raio < 0) {
+    veloXBolinha *= - 1;
+  }
+  
+  if(yBolinha + raio > height || yBolinha -  raio < 0) {
+    veloYBolinha *= - 1;
+  }
+}
+
+
+// Funções raquete 1
+function movimentoRaquete1() {
+  if(keyIsDown(UP_ARROW)){
+    yRaquete1 -= 7;
+  }
+  
+  if(keyIsDown(DOWN_ARROW)) {
+    yRaquete1 += 7;
+  }
+
+}
+
+
+//Funções raquete 2
+function movimentoRaquete2() {
+  veloYRaquete2 = yBolinha - yRaquete2 - altRaquete1 / 2 - 31.2;
+  yRaquete2 += veloYRaquete2;
+}
+
+
+//Funções compartilhadas 
+function mostraRaquete(x, y) {
+  rect(x, y, largRaquete1, altRaquete1);
+}
+function colisaoRaquete(x, y) {
+  colidiu = collideRectCircle(x, y, largRaquete1, altRaquete1, xBolinha, yBolinha, raio);
+  
+  if(colidiu){
+    veloXBolinha *= -1;
+  }
+   
+ 
+}
+
+
+//Placar de pontos
+function incluiPlacar() {
+  fill(255)
+  text(meusPontos, 278, 26);
+  text(oponentePontos, 321, 26)
+}
+
+function marcaPonto() {
+  if(xBolinha > 590) {
+    meusPontos += 1
+  }
+  
+  if(xBolinha < 10) {
+    oponentePontos += 1
+  }
+}
+
+function loopRaqueteParede(){
+  if(yRaquete1 > 400){
+    yRaquete1 = 0;  
+  }
+  
+  if(yRaquete1 < 0){
+    yRaquete1 = 400;
+  }
+}
+
+function linhaCentral(){
+    for( let y = 0; y <= 400; y = y + 20){
+          rect(300, y, 5, 10);
+    }
+}
